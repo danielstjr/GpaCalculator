@@ -31,6 +31,7 @@ class CourseDriver {
 	void deleteAllCourses();
 
 	GradesDriver* getCourseGradesDriver(int courseIndex) throw (invalid_argument);
+	string getFullCourseName(int courseIndex);
 
 	int getCourseIndex(string fullCourseName) throw (invalid_argument);
 };

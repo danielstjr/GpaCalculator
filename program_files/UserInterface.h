@@ -11,24 +11,26 @@ using namespace std;
 class UserInterface {
 	private:
 	SemesterDriver* mSemesterDriver;
- 
-	void addCourse();
-	void addGrade();
-	void addGradeCategory();
+
+	void changeDataMenu();
+
+	void addCourse(int semesterIndex);
+	void addGrade(int semesterIndex, int courseIndex);
+	void addGradeCategory(int semesterIndex, int courseIndex);
 	void addSemester();
 
 	void changeCourses();
 	void changeGrades();
 	void changeSemesters();
 
-	void deleteCourse();
-	void deleteGrade();
-	void deleteGradeCategory();
+	void deleteCourse(int semesterIndex);
+	void deleteGrade(int semesterIndex, int courseIndex);
+	void deleteGradeCategory(int semesterIndex, int courseIndex);
 	void deleteSemester();
 
-	void editCourse();
-	void editGrade();
-	void editGradeCategory();
+	void editCourse(int semesterIndex);
+	void editGrade(int semesterIndex, int courseIndex);
+	void editGradeCategory(int semesterIndex, int courseIndex);
 	void editSemester();
 
 	int getMenuInput(int upperBound, string persistentMessage);

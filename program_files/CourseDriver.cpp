@@ -34,7 +34,7 @@ CourseDriver::CourseDriver (string fileName) {
 		file.open(fileName, ofstream::out | ofstream::trunc);
 		file << 0;
 		file.close();
-		
+
 		mNumberOfCourses = 0;
 		mCourses = nullptr;
 	}
@@ -194,6 +194,10 @@ int CourseDriver::getCourseIndex(string fullCourseName) throw (invalid_argument)
 	}
 
 	return (courseIndex);
+}
+
+string CourseDriver::getFullCourseName(int courseIndex) throw (invalid_argument) {
+	return (mCourses[courseIndex]->getFullCourseName());
 }
 
 void CourseDriver::writeDataChangesToFile() {
