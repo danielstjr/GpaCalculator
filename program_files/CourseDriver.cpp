@@ -30,13 +30,13 @@ CourseDriver::CourseDriver (string fileName) {
 
 		inFile.close();
 	} else {
-		mNumberOfCourses = 0;
-		mCourses = nullptr;
-
 		ofstream file;
 		file.open(fileName, ofstream::out | ofstream::trunc);
 		file << 0;
 		file.close();
+		
+		mNumberOfCourses = 0;
+		mCourses = nullptr;
 	}
 
 	mFileName = fileName;
