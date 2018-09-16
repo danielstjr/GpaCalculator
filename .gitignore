@@ -1,0 +1,7 @@
+# Ignore data folder
+program_files/data/
+
+#ignore all Makefiles and related .o files
+Makefile
+*.o
+program_files/prog

@@ -1,0 +1,41 @@
+Requirements:
+	- At least one class object per semester for it to be a valid semester
+	- Each Course has a GradesDriver object, Grades objects themselves can be empty
+	- Master data file that serializes all data and files
+
+UI:
+	// TO DO: Define UI Class, first console then other
+
+Executive:
+	- Holds: A SemesterDriver object, and current cumulative GPA
+	- Calls all data creation, updates, and deletes of courses, semesters, and grades,
+		interfaces with soley Driver classes
+	- Writes all changes to appropriate files after all changes are made
+
+SemesterDriver:
+	- Holds: active Semester in pointer, and has an initially null pointer to inactive semesters that is filled up as inactive semesters are called
+	- Initializes active semester by default from file, or sets variable for no active classes for active semester
+	- Inactive semesters are initialized in this file when called on for editing or some other such purpose from file
+	- Creates and passes back serialized semester data 
+
+Semester:
+	- Holds: a CourseDriver object, a string of the file name used to store data for this semester(.sm), and a string for the semester name
+	- Handles all getting and setting of Course objects in Course array, and setting and getting the file name
+
+CourseDriver:
+	- Holds: array of course objects
+	- Handles adding and removing courses, calls for adding and removing grades to courses in the course object array,
+		generating serialized data string for each course
+
+Course:
+	- Holds: Credit hours, department code, course number, a GradesDriver object, bool remakeCourse object
+	- Handles getting and setting object data and calling GradesDriver
+
+GradesDriver:
+	- Holds: Grades object
+	- Handles adding, deleting, and editing grades and returning serialized Grades Data
+
+Grades:
+	- Holds: actual grades, whether grades are weighted, the categories and weight of each category
+	- Handles getting and setting of data
+

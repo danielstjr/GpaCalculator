@@ -1,0 +1,5 @@
+[number of weighted grade categories]
+[weighted grade category name] [value of weighted grade category] [number of grades in the category]
+[grade name] [earned points of assignment] [total points of assignment]
+(earned points and total points are stored as the grade multiplied by 100 and cast to int to preserve two digits of precision)
+
