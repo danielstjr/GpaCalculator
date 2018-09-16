@@ -25,7 +25,7 @@ class SemesterDriver {
 
 	CourseDriver* getCourseDriver(int courseIndex) throw (invalid_argument);
 
-	int getSemesterIndex(string fullSemesterName) throw (invalid_argument);
+	int getSemesterIndex(string fullSemesterName) throw (runtime_error, invalid_argument);
 
 	Semester* getSemester(int index) const;
 };

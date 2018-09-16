@@ -45,7 +45,7 @@ void SemesterDriver::addSemester(string season, string year, string fileName) th
 	bool uniqueSemesterName = false;
 	try {
 		getSemesterIndex((season + " " + year));
-	} catch (invalid_argument& e) {
+	} catch (...) {
 		uniqueSemesterName = true;
 	}
 
@@ -71,6 +71,8 @@ void SemesterDriver::editSemester(string fullSemesterName, string newSeason, str
 	int semesterIndex = -1;
 	try {
 		semesterIndex = getSemesterIndex(fullSemesterName);
+	} catch (runtime_error& e) {
+		throw runtime_error(e.what());
 	} catch (invalid_argument& e) {
 		throw invalid_argument(e.what());
 	}
@@ -110,6 +112,8 @@ void SemesterDriver::deleteSemester(string season, string year) throw (runtime_e
 	string fullSemesterName = season + " " + year;
 	try {
 		semesterIndex = getSemesterIndex(fullSemesterName);
+	} catch (runtime_error& e) {
+		throw runtime_error(e.what());
 	} catch (invalid_argument& e) {
 		throw invalid_argument(e.what());
 	}
@@ -148,7 +152,10 @@ CourseDriver* SemesterDriver::getCourseDriver(int semesterIndex) throw (invalid_
 	return (mSemesters[semesterIndex]->getCourseDriver());
 }
 
-int SemesterDriver::getSemesterIndex(string fullSemesterName) throw (invalid_argument) {
+int SemesterDriver::getSemesterIndex(string fullSemesterName) throw (runtime_error, invalid_argument) {
+	if (mNumberOfSemesters == 0) {
+		throw runtime_error("No semesters are initialized.");
+	}
 	int semesterIndex = -1;
 	for (int i = 0; i < mNumberOfSemesters; i++) {
 		if (fullSemesterName == mSemesters[i]->getFullSemesterName()) {

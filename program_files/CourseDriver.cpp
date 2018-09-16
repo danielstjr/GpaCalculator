@@ -180,7 +180,10 @@ string CourseDriver::getFileName() const {
 	return (mFileName);
 }
 
-int CourseDriver::getCourseIndex(string fullCourseName) throw (invalid_argument) {
+int CourseDriver::getCourseIndex(string fullCourseName) throw (runtime_error, invalid_argument) {
+	if (mNumberOfCourses == 0) {
+		throw runtime_error ("No courses are initialized yet.");
+	}
 	int courseIndex = -1;
 	for (int i = 0; i < mNumberOfCourses; i++) {
 		if (fullCourseName == mCourses[i]->getFullCourseName()) {
@@ -196,7 +199,7 @@ int CourseDriver::getCourseIndex(string fullCourseName) throw (invalid_argument)
 	return (courseIndex);
 }
 
-string CourseDriver::getFullCourseName(int courseIndex) throw (invalid_argument) {
+string CourseDriver::getFullCourseName(int courseIndex) {
 	return (mCourses[courseIndex]->getFullCourseName());
 }
 

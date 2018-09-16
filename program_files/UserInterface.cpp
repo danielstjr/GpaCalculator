@@ -50,21 +50,28 @@ void UserInterface::changeDataMenu() {
 
 void UserInterface::changeGrades() {
 	int intUserInput = 0;
+	int semesterIndex = 0;
+	int courseIndex = 0;
 	string menu = "";
 
 	cout << "\n";
-	int semesterIndex = getValidSemesterIndex();
-	int courseIndex = getValidCourseIndex(semesterIndex);
+	try {
+		semesterIndex = getValidSemesterIndex();
+		courseIndex = getValidCourseIndex(semesterIndex);
 
-	menu += "\nGrades Menu:\n-------------------\n";
-	menu += "Current Selection:";
-	menu += "\nSemester: " + mSemesterDriver->getSemester(semesterIndex)->getFullSemesterName();
-	menu += "\nCourse: " + mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getFullCourseName(courseIndex);
-	menu += "\n-------------------\n";
-	menu += "1) Add Grade\n2) Add Grade Category\n";
-	menu += "3) Edit Grade\n4) Edit Grade Category\n";
-	menu += "5) Delete Grade\n6) Delete Grade Category\n";
-	menu += "7) Select a Different Semester/Course\n8) Exit\n";
+		menu += "\nGrades Menu:\n-------------------\n";
+		menu += "Current Selection:";
+		menu += "\nSemester: " + mSemesterDriver->getSemester(semesterIndex)->getFullSemesterName();
+		menu += "\nCourse: " + mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getFullCourseName(courseIndex);
+		menu += "\n-------------------\n";
+		menu += "1) Add Grade\n2) Add Grade Category\n";
+		menu += "3) Edit Grade\n4) Edit Grade Category\n";
+		menu += "5) Delete Grade\n6) Delete Grade Category\n";
+		menu += "7) Select a Different Semester/Course\n8) Exit\n";
+	} catch (runtime_error& e) {
+		cout << e.what() << endl;
+		intUserInput = 8;
+	}
 
 	while (intUserInput != 8) {
 		intUserInput = getMenuInput(9, menu);
@@ -245,17 +252,23 @@ void UserInterface::editGradeCategory(int semesterIndex, int courseIndex) {
 
 void UserInterface::changeCourses() {
 	int intUserInput = 0;
+	int semesterIndex = 0;
 	string menu = "";
 
-	cout << "\n";
-	int semesterIndex = getValidSemesterIndex();
+	try {
+		cout << "\n";
+		semesterIndex = getValidSemesterIndex();
 
-	menu += "\nCourse Menu:\n-------------------\n";
-	menu += "Current Selection:";
-	menu += "\nSemester: " + mSemesterDriver->getSemester(semesterIndex)->getFullSemesterName();
-	menu += "\n-------------------\n";
-	menu += "1) Add Course\n2) Edit Course\n3) Delete Course\n";
-	menu += "4) Change Semester Selection\n5) Exit\n";
+		menu += "\nCourse Menu:\n-------------------\n";
+		menu += "Current Selection:";
+		menu += "\nSemester: " + mSemesterDriver->getSemester(semesterIndex)->getFullSemesterName();
+		menu += "\n-------------------\n";
+		menu += "1) Add Course\n2) Edit Course\n3) Delete Course\n";
+		menu += "4) Change Semester Selection\n5) Exit\n";
+	} catch (runtime_error& e) {
+		cout << e.what() << endl;
+		intUserInput = 5;
+	}
 
 	while (intUserInput != 5) {
 		intUserInput = getMenuInput(6, menu);
@@ -268,7 +281,7 @@ void UserInterface::changeCourses() {
 			deleteCourse(semesterIndex);
 		} else if (intUserInput == 4) {
 			cout << "\n";
-			int semesterIndex = getValidSemesterIndex();
+			semesterIndex = getValidSemesterIndex();
 
 			menu = "";
 
@@ -516,7 +529,7 @@ string UserInterface::generateFileName(string season, string year, string depart
 	return (fileName);
 }
 
-int UserInterface::getValidSemesterIndex() {
+int UserInterface::getValidSemesterIndex() throw (runtime_error) {
 	string season, year;
 	int semesterIndex;
 	while (true) {
@@ -528,6 +541,8 @@ int UserInterface::getValidSemesterIndex() {
 		try {
 			semesterIndex = mSemesterDriver->getSemesterIndex(fullSemesterName);
 			break;
+		} catch (runtime_error& e) {
+			throw runtime_error(e.what());
 		} catch (invalid_argument& e) {
 			cout << endl << e.what() << "\n\n";
 		}
@@ -536,7 +551,7 @@ int UserInterface::getValidSemesterIndex() {
 	return (semesterIndex);
 }
 
-int UserInterface::getValidCourseIndex(int semesterIndex) {
+int UserInterface::getValidCourseIndex(int semesterIndex) throw (runtime_error) {
 	string departmentCode, courseNumber, fullCourseName;
 	int courseIndex;
 	while (true) {
@@ -547,6 +562,8 @@ int UserInterface::getValidCourseIndex(int semesterIndex) {
 		try {
 			courseIndex = mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getCourseIndex(fullCourseName);
 			break;
+		} catch(runtime_error& e) {
+			throw runtime_error(e.what());
 		} catch (invalid_argument& e) {
 			cout << endl << e.what() << "\n\n";
 		}

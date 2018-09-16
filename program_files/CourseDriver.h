@@ -33,6 +33,6 @@ class CourseDriver {
 	GradesDriver* getCourseGradesDriver(int courseIndex) throw (invalid_argument);
 	string getFullCourseName(int courseIndex);
 
-	int getCourseIndex(string fullCourseName) throw (invalid_argument);
+	int getCourseIndex(string fullCourseName) throw (runtime_error, invalid_argument);
 };
 #endif
