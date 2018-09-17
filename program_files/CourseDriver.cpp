@@ -73,7 +73,7 @@ void CourseDriver::addCourse(string departmentName, string courseNumber, int cre
 
 	try {
 		getCourseIndex(fullCourseName);
-	} catch (invalid_argument& e) {
+	} catch (...) {
 		uniqueCourseName = true;
 	}
 

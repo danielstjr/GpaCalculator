@@ -37,16 +37,14 @@ class UserInterface {
 
 	string generateFileName(string season, string year, string departmentCode, string courseNumber, int fileType);
 
-	int getValidSemesterIndex() throw (runtime_error);
-	int getValidCourseIndex(int semesterIndex) throw (runtime_error);
+	int getValidSemesterIndex() throw (logic_error, runtime_error);
+	int getValidCourseIndex(int semesterIndex) throw (logic_error, runtime_error);
 
-	int getValidInt(string inputMessage, string failureMessage);
-	string getValidString(string inputMessage, string failureMessage, bool allowSpaces, bool allowNumbers);
-
+	string getValidString(string inputMessage, string failureMessage, bool allowSpaces, bool allowNumbers) throw (logic_error);
 	bool validString(string input, bool allowSpaces, bool allowNumbers);
 
 	template <typename number>
-	number getValidNumber(string inputMessage, string failureMessage);
+	number getValidNumber(string inputMessage, string failureMessage) throw (logic_error);
 	public:
 	UserInterface();
 	~UserInterface();
