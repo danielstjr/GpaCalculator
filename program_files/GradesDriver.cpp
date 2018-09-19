@@ -640,3 +640,40 @@ int GradesDriver::getTotalCategoryWeight() const {
 
 	return (totalWeight);
 }
+
+string GradesDriver::print() {
+	string output = "";
+	int categoryCount = mGrades->getCategoryCount();
+	for (int i = 0; i < categoryCount; i++) {
+		int categoryGradeCount = mGrades->getCategoryGradeCount(i);
+		output += mGrades->getCategoryName(i) + ":\n";
+		for (int j = 0; j < categoryGradeCount; j++) {
+			//string earnedPoints, totalPoints;
+			stringstream ss;
+
+			ss << fixed << setprecision(2) << mGrades->getEarnedPoints(i,j);
+			string earnedPoints = ss.str();
+
+			ss.clear();
+			ss.str("");
+
+			ss << fixed << setprecision(2) << mGrades->getTotalPoints(i,j);
+			string totalPoints = ss.str();
+
+			output += "\t" + mGrades->getGradeName(i, j) + ": ";
+			output += earnedPoints + "\\" + totalPoints + "\n";
+		}
+		output += "\n";
+	}
+
+	stringstream ss;
+	ss << fixed << setprecision(2) << ((double)mGrades->getCurrentGrade())/100.0;
+
+	output += "Overall Grade: " + ss.str() + "%";
+
+	return (output);
+}
+
+Grades* GradesDriver::getGrades() {
+	return (mGrades);
+}

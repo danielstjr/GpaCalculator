@@ -2,6 +2,7 @@
 #define GRADES_DRIVER_H
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -170,5 +171,9 @@ class GradesDriver {
 	*
 	*/
 	int getTotalCategoryWeight() const;
+
+	string print();
+
+	Grades* getGrades();
 };
 #endif

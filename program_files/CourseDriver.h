@@ -1,6 +1,6 @@
 #ifndef COURSE_DRIVER_H
 #define COURSE_DRIVER_H
-#include "GradesDriver.h"
+#include "Grades.h"
 #include "Course.h"
 #include <iostream>
 #include <stdio.h>
@@ -12,7 +12,7 @@ using namespace std;
 class CourseDriver {
 	private:
 	Course** mCourses;
-	int mNumberOfCourses;
+	int mCourseCount;
 	bool mDataChanged;
 	string mFileName;
 
@@ -37,5 +37,8 @@ class CourseDriver {
 	string getFullCourseName(int courseIndex);
 
 	int getCourseIndex(string fullCourseName) throw (runtime_error, invalid_argument);
+
+	string printCourse(int courseIndex);
+	string printAllCourses();
 };
 #endif

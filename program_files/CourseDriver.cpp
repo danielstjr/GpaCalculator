@@ -5,11 +5,11 @@ CourseDriver::CourseDriver (string fileName) {
 	inFile.open(fileName);
 
 	if(inFile.is_open()) {
-		inFile >> mNumberOfCourses;
+		inFile >> mCourseCount;
 
-		if (mNumberOfCourses > 0) {
-			mCourses = new Course*[mNumberOfCourses];
-			for (int i = 0; i < mNumberOfCourses; i++) {
+		if (mCourseCount > 0) {
+			mCourses = new Course*[mCourseCount];
+			for (int i = 0; i < mCourseCount; i++) {
 				string departmentCode;
 				string courseNumber;
 				string gradesFileName;
@@ -35,7 +35,7 @@ CourseDriver::CourseDriver (string fileName) {
 		file << 0;
 		file.close();
 
-		mNumberOfCourses = 0;
+		mCourseCount = 0;
 		mCourses = nullptr;
 	}
 
@@ -44,13 +44,13 @@ CourseDriver::CourseDriver (string fileName) {
 }
 
 CourseDriver& CourseDriver::operator= (const CourseDriver& original) {
-	for (int i = 0; i < mNumberOfCourses; i++) {
+	for (int i = 0; i < mCourseCount; i++) {
 		delete mCourses[i];
 	}
 	delete[] mCourses;
 
 	mCourses = original.mCourses;
-	mNumberOfCourses = original.mNumberOfCourses;
+	mCourseCount = original.mCourseCount;
 	mDataChanged = original.mDataChanged;
 	mFileName = original.mFileName;
 
@@ -61,7 +61,7 @@ CourseDriver::~CourseDriver() {
 	if (mDataChanged) {
 		writeDataChangesToFile();
 	}
-	for (int i = 0; i < mNumberOfCourses; i++) {
+	for (int i = 0; i < mCourseCount; i++) {
 		delete mCourses[i];
 	}
 	delete[] mCourses;
@@ -81,8 +81,8 @@ void CourseDriver::addCourse(string departmentCode, string courseNumber, int cre
 		throw invalid_argument("Given course name is not unique to this semester.");
 	}
 
-	Course** newCourses = new Course*[mNumberOfCourses + 1];
-	for (int i = 0; i < mNumberOfCourses; i++) {
+	Course** newCourses = new Course*[mCourseCount + 1];
+	for (int i = 0; i < mCourseCount; i++) {
 		newCourses[i] = mCourses[i];
 	}
 
@@ -91,11 +91,11 @@ void CourseDriver::addCourse(string departmentCode, string courseNumber, int cre
 	file << 0;
 	file.close();
 
-	newCourses[mNumberOfCourses] = new Course(departmentCode, courseNumber, "-1", creditHours, gradeFileName);
+	newCourses[mCourseCount] = new Course(departmentCode, courseNumber, "-1", creditHours, gradeFileName);
 	delete[] mCourses;
 
 	mCourses = newCourses;
-	mNumberOfCourses++;
+	mCourseCount++;
 	mDataChanged = true;
 }
 
@@ -117,10 +117,10 @@ void CourseDriver::deleteCourse(string fullCourseName) throw (runtime_error, inv
 
 	Course** newCourses = nullptr;
 
-	if (mNumberOfCourses > 1) {
-		newCourses = new Course*[mNumberOfCourses - 1];
+	if (mCourseCount > 1) {
+		newCourses = new Course*[mCourseCount - 1];
 		int index = 0;
-		for (int i = 0; i < mNumberOfCourses; i++) {
+		for (int i = 0; i < mCourseCount; i++) {
 			if(i != courseIndex) {
 				newCourses[index] = mCourses[i];
 				index++;
@@ -132,18 +132,18 @@ void CourseDriver::deleteCourse(string fullCourseName) throw (runtime_error, inv
 	delete[] mCourses;
 
 	mCourses = newCourses;
-	mNumberOfCourses--;
+	mCourseCount--;
 	mDataChanged = true;
 }
 
 void CourseDriver::deleteAllCourses() {
-	for (int i = 0; i < mNumberOfCourses; i++) {
+	for (int i = 0; i < mCourseCount; i++) {
 		string courseName = mCourses[i]->getFullCourseName();
 		deleteCourse(courseName);
 	}
 	delete[] mCourses;
 	mCourses = nullptr;
-	mNumberOfCourses = 0;
+	mCourseCount = 0;
 }
 
 void CourseDriver::editDepartmentCode(string oldFullCourseName, string departmentCode, string newGradesFileName) throw (runtime_error, invalid_argument) {
@@ -249,11 +249,11 @@ string CourseDriver::getFileName() const {
 }
 
 int CourseDriver::getCourseIndex(string fullCourseName) throw (runtime_error, invalid_argument) {
-	if (mNumberOfCourses == 0) {
+	if (mCourseCount == 0) {
 		throw runtime_error ("No courses are initialized yet.");
 	}
 	int courseIndex = -1;
-	for (int i = 0; i < mNumberOfCourses; i++) {
+	for (int i = 0; i < mCourseCount; i++) {
 		if (fullCourseName == mCourses[i]->getFullCourseName()) {
 			courseIndex = i;
 			break;
@@ -267,6 +267,30 @@ int CourseDriver::getCourseIndex(string fullCourseName) throw (runtime_error, in
 	return (courseIndex);
 }
 
+string CourseDriver::printCourse(int courseIndex) {
+	string output = "";
+
+	Grades* grades = mCourses[courseIndex]->getGradesDriver()->getGrades();
+	cout << "Categories and weights: ";
+	for (int i = 0; i < grades->getCategoryCount(); i++) {
+		output += "\t" + grades->getCategoryName(i) + ": ";
+		output += to_string(grades->getCategoryWeight(i)) + "\n";
+	}
+
+	return (output);
+}
+
+string CourseDriver::printAllCourses() {
+	string output = "\n";
+
+	for (int i = 0; i < mCourseCount; i++) {
+		output += "\t" + mCourses[i]->getDepartmentCode() + " ";
+		output += mCourses[i]->getCourseNumber() + "\n";
+	}
+
+	return (output);
+}
+
 string CourseDriver::getFullCourseName(int courseIndex) {
 	return (mCourses[courseIndex]->getFullCourseName());
 }
@@ -276,9 +300,9 @@ void CourseDriver::writeDataChangesToFile() {
 
 	file.open(mFileName, ofstream::out | ofstream::trunc);
 
-	file << mNumberOfCourses << endl;
+	file << mCourseCount << endl;
 
-	for (int i = 0; i < mNumberOfCourses; i++) {
+	for (int i = 0; i < mCourseCount; i++) {
 		file << mCourses[i]->getFullCourseName() << " ";
 		file << mCourses[i]->getFinalGrade() << " ";
 		file << mCourses[i]->getCreditHours() << " ";

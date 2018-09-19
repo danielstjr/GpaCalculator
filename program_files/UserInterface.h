@@ -43,6 +43,10 @@ class UserInterface {
 	string getValidString(string inputMessage, string failureMessage, bool allowSpaces, bool allowNumbers) throw (logic_error);
 	bool validString(string input, bool allowSpaces, bool allowNumbers);
 
+	void viewGrades();
+	void viewCourseInfo();
+	void viewSemesterInfo();
+
 	template <typename number>
 	number getValidNumber(string inputMessage, string failureMessage) throw (logic_error);
 	public:
