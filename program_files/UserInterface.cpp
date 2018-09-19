@@ -12,18 +12,85 @@ void UserInterface::run() {
 	int intUserInput = 0;
 	string menu = "";
 	menu += "\nMenu:\n-------------------\n";
-	menu += "1) View Grades\n2) Change Data\n";
-	menu += "3) Exit\n";
+	menu += "1) View Grades\n2) View Course Info\n";
+	menu += "3) View Courses in Semester\n4) Change Data\n5) Exit\n";
 
-	while (intUserInput != 3) {
-		intUserInput = getMenuInput(4, menu);
+	while (intUserInput != 5) {
+		intUserInput = getMenuInput(5, menu);
 		if (intUserInput == 1) {
-			cout << "\nUnder construction.\n\n" << endl;
+			viewGrades();
 		} else if (intUserInput == 2) {
-			changeDataMenu();
+			viewCourseInfo();
 		} else if (intUserInput == 3) {
+			viewSemesterInfo();
+		} else if (intUserInput == 4) {
+			changeDataMenu();
+		} else if (intUserInput == 5) {
 			cout << "\nGoodbye!\n\n";
 		}
+	}
+}
+
+void UserInterface::viewGrades() {
+	int semesterIndex, courseIndex;
+	bool print = true;
+	cout << "\n";
+	try {
+		semesterIndex = getValidSemesterIndex();
+		courseIndex = getValidCourseIndex(semesterIndex);
+	} catch (runtime_error& e) {
+		cout << e.what() << endl;
+		print = false;
+	} catch (logic_error& e) {
+		cout << "\nQuitting...\n\n";;
+		print = false;
+	}
+
+	if (print) {
+		string output = mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getCourseGradesDriver(courseIndex)->print();
+		cout << endl << output << endl;
+	}
+}
+
+void UserInterface::viewCourseInfo() {
+	int semesterIndex, courseIndex;
+	bool print = true;
+	cout << "\n";
+	try {
+		semesterIndex = getValidSemesterIndex();
+		courseIndex = getValidCourseIndex(semesterIndex);
+	} catch (runtime_error& e) {
+		cout << e.what() << endl;
+		print = false;
+	} catch (logic_error& e) {
+		cout << "\nQuitting...\n\n";;
+		print = false;
+	}
+
+	if (print) {
+		string output = mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->printCourse(courseIndex);
+		cout << endl << output << endl;
+	}
+}
+
+void UserInterface::viewSemesterInfo() {
+	int semesterIndex;
+	bool print = true;
+	cout << "\n";
+	try {
+		semesterIndex = getValidSemesterIndex();
+	} catch (runtime_error& e) {
+		cout << e.what() << endl;
+		print = false;
+	} catch (logic_error& e) {
+		cout << "\nQuitting...\n\n";;
+		print = false;
+	}
+
+	if (print) {
+		string output = mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->printAllCourses();
+		cout << "\nCourses in " << mSemesterDriver->getSemester(semesterIndex)->getFullSemesterName();
+		cout << ": " << output << endl;
 	}
 }
 
@@ -35,7 +102,7 @@ void UserInterface::changeDataMenu() {
 	menu += "3) Change of Semesters\n4) Exit\n";
 
 	while (intUserInput != 4) {
-		intUserInput = getMenuInput(5, menu);
+		intUserInput = getMenuInput(4, menu);
 		if (intUserInput == 1) {
 			changeGrades();
 		} else if (intUserInput == 2) {
@@ -77,7 +144,7 @@ void UserInterface::changeGrades() {
 	}
 
 	while (intUserInput != 9) {
-		intUserInput = getMenuInput(10, menu);
+		intUserInput = getMenuInput(9, menu);
 
 		if (intUserInput == 1) {
 			addGrade(semesterIndex, courseIndex);
@@ -329,7 +396,7 @@ void UserInterface::changeCourses() {
 	}
 
 	while (intUserInput != 8) {
-		intUserInput = getMenuInput(9, menu);
+		intUserInput = getMenuInput(8, menu);
 
 		if (intUserInput == 1) {
 			addCourse(semesterIndex);
@@ -474,7 +541,6 @@ void UserInterface::editCourse(int semesterIndex, int changeType) {
 				} catch (exception& e) {
 					cout << e.what() << endl;
 				}
-
 			} else if (changeType == 1) {
 				string newCourseNumber = to_string(getValidNumber<int>("Enter the new course number for the old course", "Course numbers can only be whole numbers."));
 				string fileName = generateFileName(season, year, oldDepartmentCode, newCourseNumber, 2);
@@ -547,7 +613,7 @@ void UserInterface::changeSemesters() {
 	menu += "3) Delete Semester\n4) Exit\n";
 
 	while (intUserInput != 4) {
-		intUserInput = getMenuInput(5, menu);
+		intUserInput = getMenuInput(4, menu);
 
 		if (intUserInput == 1) {
 			addSemester();
@@ -740,7 +806,7 @@ int UserInterface::getMenuInput(int upperBound, string persistentMessage) {
 		if (ss.fail()||!ss.eof()) {
 			intUserInput = 0;
 		}
-		if (intUserInput > 0 && intUserInput < upperBound) {
+		if (intUserInput > 0 && intUserInput <= upperBound) {
 			break;
 		} else {
 			cout << "\nInvalid selection.\n\n";
