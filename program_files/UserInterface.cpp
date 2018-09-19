@@ -65,9 +65,9 @@ void UserInterface::changeGrades() {
 		menu += "\nCourse: " + mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getFullCourseName(courseIndex);
 		menu += "\n-------------------\n";
 		menu += "1) Add Grade\n2) Add Grade Category\n";
-		menu += "3) Edit Grade\n4) Edit Grade Category\n";
-		menu += "5) Delete Grade\n6) Delete Grade Category\n";
-		menu += "7) Select a Different Semester/Course\n8) Exit\n";
+		menu += "3) Edit Grade Name\n4) Edit Grade Values\n5) Edit Category\n";
+		menu += "6) Delete Grade\n7) Delete Grade Category\n";
+		menu += "8) Select a Different Semester/Course\n9) Exit\n";
 	} catch (runtime_error& e) {
 		cout << e.what() << endl;
 		intUserInput = 8;
@@ -76,22 +76,24 @@ void UserInterface::changeGrades() {
 		intUserInput = 8;
 	}
 
-	while (intUserInput != 8) {
-		intUserInput = getMenuInput(9, menu);
+	while (intUserInput != 9) {
+		intUserInput = getMenuInput(10, menu);
 
 		if (intUserInput == 1) {
 			addGrade(semesterIndex, courseIndex);
 		} else if (intUserInput == 2) {
 			addGradeCategory(semesterIndex, courseIndex);
 		} else if (intUserInput == 3) {
-			editGrade(semesterIndex, courseIndex);
+			editGrade(semesterIndex, courseIndex, 0);
 		} else if (intUserInput == 4) {
-			editGradeCategory(semesterIndex, courseIndex);
+			editGrade(semesterIndex, courseIndex, 1);
 		} else if (intUserInput == 5) {
+			editGradeCategory(semesterIndex, courseIndex);
+		} else if (intUserInput == 6) {
 			deleteGrade(semesterIndex, courseIndex);
-		} else if(intUserInput == 6) {
+		} else if(intUserInput == 7) {
 			deleteGradeCategory(semesterIndex, courseIndex);
-		} else if (intUserInput == 7) {
+		} else if (intUserInput == 8) {
 			cout << "\n";
 			int newSemesterIndex, newCourseIndex;
 			try {
@@ -111,17 +113,16 @@ void UserInterface::changeGrades() {
 			menu += "\nCourse: " + mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getFullCourseName(courseIndex);
 			menu += "\n-------------------\n";
 			menu += "1) Add Grade\n2) Add Grade Category\n";
-			menu += "3) Edit Grade\n4) Edit Grade Category\n";
-			menu += "5) Delete Grade\n6) Delete Grade Category\n";
-			menu += "7) Select a Different Semester/Course\n8) Exit\n";
-		} else if (intUserInput == 8) {
+			menu += "3) Edit Grade Name\n4) Edit Grade Values\n5) Edit Category\n";
+			menu += "6) Delete Grade\n7) Delete Grade Category\n";
+			menu += "8) Select a Different Semester/Course\n9) Exit\n";
+		} else if (intUserInput == 9) {
 			cout << "\nExiting Grades Menu...\n";
 		}
 	}
 }
 
 void UserInterface::addGrade(int semesterIndex, int courseIndex) {
-	GradesDriver* courseGradesDriver = mSemesterDriver->getCourseDriver(semesterIndex)->getCourseGradesDriver(courseIndex);
 	bool gradeAdded = false;
 	try {
 		while (!gradeAdded) {
@@ -135,7 +136,7 @@ void UserInterface::addGrade(int semesterIndex, int courseIndex) {
 			cout << "\n";
 
 			try {
-				courseGradesDriver->addGrade(categoryName, gradeName, earnedPoints, totalPoints);
+				mSemesterDriver->getCourseDriver(semesterIndex)->getCourseGradesDriver(courseIndex)->addGrade(categoryName, gradeName, earnedPoints, totalPoints);
 				gradeAdded = true;
 				cout << "Grade successfully added!" << endl;
 			} catch (invalid_argument& e) {
@@ -232,7 +233,7 @@ void UserInterface::deleteGradeCategory(int semesterIndex, int courseIndex) {
 	}
 }
 
-void UserInterface::editGrade(int semesterIndex, int courseIndex) {
+void UserInterface::editGrade(int semesterIndex, int courseIndex, int changeType) {
 	GradesDriver* courseGradesDriver = mSemesterDriver->getCourseDriver(semesterIndex)->getCourseGradesDriver(courseIndex);
 	bool gradeEdited = false;
 
@@ -244,18 +245,28 @@ void UserInterface::editGrade(int semesterIndex, int courseIndex) {
 			cout << "\n";
 			categoryName = getValidString("Enter the name of the grade category you want to add the grade to", "Category names can only contain letters and spaces.", true, true);
 			oldGradeName = getValidString("Enter the name of the grade you want to edit", "Grade names cano only contain letters and spaces", true, true);
-			newGradeName = getValidString("Enter the name of the new grade name", "Grade names can only contain letters and spaces.", true, true);
-			earnedPoints = getValidNumber<double>("Enter the new earned points for this assignment", "Invalid input.");
-			totalPoints = getValidNumber<double>("Enter the new total points for this assignment", "Invalid input.");
-			cout << "\n";
+			if (changeType == 0) {
+				newGradeName = getValidString("Enter the new grade name", "Grade names can only contain letters and spaces.", true, true);
+				cout << "\n";
 
-			try {
-				courseGradesDriver->editGrade(categoryName, oldGradeName, newGradeName, earnedPoints, totalPoints);
-				gradeEdited = true;
-				cout << "Grades successfully edited!" << endl;
-			} catch (invalid_argument& e) {
-				cout << e.what() << endl;
+				try {
+					courseGradesDriver->editGradeName(categoryName, oldGradeName, newGradeName);
+				} catch (invalid_argument& e) {
+					cout << e.what() << endl;
+				}
+			} else if (changeType == 1) {
+				earnedPoints = getValidNumber<double>("Enter the new earned points for this assignment", "Invalid input.");
+				totalPoints = getValidNumber<double>("Enter the new total points for this assignment", "Invalid input.");
+				cout << "\n";
+
+				try {
+					courseGradesDriver->editGradeValues(categoryName, oldGradeName, earnedPoints, totalPoints);
+				} catch (invalid_argument& e) {
+					cout << e.what() << endl;
+				}
 			}
+			gradeEdited = true;
+			cout << "Grade successfully edited!" << endl;
 		}
 	} catch (runtime_error& e) {
 		cout << e.what() << endl;
@@ -307,8 +318,9 @@ void UserInterface::changeCourses() {
 		menu += "Current Selection:";
 		menu += "\nSemester: " + mSemesterDriver->getSemester(semesterIndex)->getFullSemesterName();
 		menu += "\n-------------------\n";
-		menu += "1) Add Course\n2) Edit Course\n3) Delete Course\n";
-		menu += "4) Change Semester Selection\n5) Exit\n";
+		menu += "1) Add Course\n2) Edit Deparment Code\n3) Edit Course Number\n";
+		menu += "4) Edit Credit Hours\n5) Edit Final Grade\n6) Delete Course\n";
+		menu += "7) Change Semester Selection\n8) Exit\n";
 	} catch(logic_error& e) {
 		cout << "\nQuitting...\n\n";;
 		intUserInput = 5;
@@ -317,16 +329,22 @@ void UserInterface::changeCourses() {
 		intUserInput = 5;
 	}
 
-	while (intUserInput != 5) {
-		intUserInput = getMenuInput(6, menu);
+	while (intUserInput != 8) {
+		intUserInput = getMenuInput(9, menu);
 
 		if (intUserInput == 1) {
 			addCourse(semesterIndex);
 		} else if (intUserInput == 2) {
-			editCourse(semesterIndex);
+			editCourse(semesterIndex, 0);
 		} else if (intUserInput == 3) {
-			deleteCourse(semesterIndex);
+			editCourse(semesterIndex, 1);
 		} else if (intUserInput == 4) {
+			editCourse(semesterIndex, 2);
+		} else if (intUserInput == 5) {
+			editCourse(semesterIndex, 3);
+		} else if (intUserInput == 6) {
+			deleteCourse(semesterIndex);
+		} else if (intUserInput == 7) {
 			cout << "\n";
 			try {
 				semesterIndex = getValidSemesterIndex();
@@ -339,9 +357,10 @@ void UserInterface::changeCourses() {
 			menu += "Current Selection:";
 			menu += "\nSemester: " + mSemesterDriver->getSemester(semesterIndex)->getFullSemesterName();
 			menu += "\n-------------------\n";
-			menu += "1) Add Course\n2) Edit Course\n3) Delete Course\n";
-			menu += "4) Change Semester Selection\n5) Exit\n";
-		} else if (intUserInput == 5) {
+			menu += "1) Add Course\n2) Edit Deparment Code\n3) Edit Course Number\n";
+			menu += "4) Edit Credit Hours\n5) Edit Final Grade\n6) Delete Course\n";
+			menu += "7) Change Semester Selection\n8) Exit\n";
+		} else if (intUserInput == 8) {
 			cout << "\nExiting Course Menu...\n";
 		}
 	}
@@ -398,8 +417,12 @@ void UserInterface::deleteCourse(int semesterIndex) {
 
 				fullCourseName = departmentCode + " " + courseNumber;
 
-				mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getCourseIndex(fullCourseName);
-				validCourseName = true;
+				try {
+					mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getCourseIndex(fullCourseName);
+					validCourseName = true;
+				} catch (invalid_argument& e) {
+					cout << e.what() << endl;
+				}
 			}
 			try {
 				mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->deleteCourse(fullCourseName);
@@ -416,34 +439,62 @@ void UserInterface::deleteCourse(int semesterIndex) {
 	}
 }
 
-void UserInterface::editCourse(int semesterIndex) {
+void UserInterface::editCourse(int semesterIndex, int changeType) {
 	string season = mSemesterDriver->getSemester(semesterIndex)->getSeason();
 	string year = mSemesterDriver->getSemester(semesterIndex)->getYear();
+	CourseDriver* courseDriver = mSemesterDriver->getSemester(semesterIndex)->getCourseDriver();
 	bool courseEdited = false;
 
 	try {
 		while (!courseEdited) {
-			string oldDepartmentCode, newDepartmentCode, oldCourseNumber, newCourseNumber, oldFullCourseName, finalGrade, fileName;
-			int creditHours;
+			string oldDepartmentCode, oldCourseNumber, oldFullCourseName;
 			bool validCourseName = false;
 			bool validFinalGrade = false;
 
-				while (!validCourseName) {
-					cout << "\n";
-					oldDepartmentCode = getValidString("Enter the department code for the course you want to edit", "Department Codes can only contain letters.", false, false);
-					oldCourseNumber = to_string(getValidNumber<int>("Enter the course number for the course you want to edit", "Course numbers can only be whole numbers."));
-					cout << "\n";
+			while (!validCourseName) {
+				cout << "\n";
+				oldDepartmentCode = getValidString("Enter the department code for the course you want to edit", "Department Codes can only contain letters.", false, false);
+				oldCourseNumber = to_string(getValidNumber<int>("Enter the course number for the course you want to edit", "Course numbers can only be whole numbers."));
+				cout << "\n";
 
-					oldFullCourseName = oldDepartmentCode + " " + oldCourseNumber;
+				oldFullCourseName = oldDepartmentCode + " " + oldCourseNumber;
 
+				try {
 					mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->getCourseIndex(oldFullCourseName);
 					validCourseName = true;
+				} catch (invalid_argument& e) {
+					cout << e.what() << endl;
+				}
+			}
+
+			if (changeType  == 0) {
+				string newDepartmentCode = getValidString("Enter the new department code for the old course",  "Department Codes can only contain letters.", false, false);
+				string fileName = generateFileName(season, year, newDepartmentCode, oldCourseNumber, 2);
+				try {
+					courseDriver->editDepartmentCode(oldFullCourseName, newDepartmentCode, fileName);
+				} catch (exception& e) {
+					cout << e.what() << endl;
 				}
 
-				newDepartmentCode = getValidString("Enter the new department code for the old course",  "Department Codes can only contain letters.", false, false);
-				newCourseNumber = to_string(getValidNumber<int>("Enter the new course number for the old course", "Course numbers can only be whole numbers."));
-				creditHours = getValidNumber<int>("Enter the new credit hours for the course", "Credit hours have to be a whole number.");
-				fileName = generateFileName(season, year, newDepartmentCode, newCourseNumber, 2);
+			} else if (changeType == 1) {
+				string newCourseNumber = to_string(getValidNumber<int>("Enter the new course number for the old course", "Course numbers can only be whole numbers."));
+				string fileName = generateFileName(season, year, oldDepartmentCode, newCourseNumber, 2);
+
+				try {
+					courseDriver->editCourseNumber(oldFullCourseName, newCourseNumber, fileName);
+				} catch (exception& e) {
+					cout << e.what() << endl;
+				}
+			} else if (changeType == 2) {
+				int newCreditHours = getValidNumber<int>("Enter the new credit hours for the course", "Credit hours have to be a whole number.");
+
+				try {
+					courseDriver->editCreditHours(oldFullCourseName, newCreditHours);
+				} catch (exception& e) {
+					cout << e.what() << endl;
+				}
+			} else if (changeType == 3) {
+				string newFinalGrade;
 
 				while(!validFinalGrade) {
 					stringstream ss;
@@ -462,7 +513,7 @@ void UserInterface::editCourse(int semesterIndex) {
 
 					if (ss.fail()||!ss.eof()) {
 						if(stringUserInput == "-1") {
-							finalGrade = "-1";
+							newFinalGrade = "-1";
 							validFinalGrade = true;
 						} else {
 							cout << "\nInvalid Final Grade.\n\n";
@@ -470,22 +521,21 @@ void UserInterface::editCourse(int semesterIndex) {
 						continue;
 					}
 					if ((int(charFinalGrade) > 65 && int(charFinalGrade) < 69) || int(charFinalGrade) == 70) {
-						finalGrade = charFinalGrade;
+						newFinalGrade = charFinalGrade;
 						validFinalGrade = true;
 					}
 				}
 
 				try {
-					mSemesterDriver->getSemester(semesterIndex)->getCourseDriver()->editCourse(oldFullCourseName, newDepartmentCode, newCourseNumber, finalGrade, creditHours, fileName);
-					courseEdited = true;
-					cout << "\nCourse successfully edited!" << endl;
-				} catch (invalid_argument& e) {
+					courseDriver->editFinalGrade(oldFullCourseName, newFinalGrade);
+				} catch (exception& e) {
 					cout << e.what() << endl;
 				}
 			}
-	} catch (runtime_error& e) {
-		cout << e.what() << endl;
-	}  catch (logic_error& e) {
+			courseEdited = true;
+			cout << "\nCourse succesfully edited!\n";
+		}
+	} catch (logic_error& e) {
 		cout << "\nQuitting...\n\n";;
 	}
 }

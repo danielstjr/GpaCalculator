@@ -388,8 +388,7 @@ void GradesDriver::editCategory (string oldCategoryName, string newCategoryName,
 	mDataChanged = true;
 }
 
-
-void GradesDriver::editGrade(string categoryName, string oldGradeName, string newGradeName, double inEarnedPoints, double inTotalPoints) throw (runtime_error, invalid_argument) {
+void GradesDriver::editGradeName(string categoryName, string oldGradeName, string newGradeName) throw (runtime_error, invalid_argument) {
 	int categoryIndex = -1;
 
 	// This series of try/catch blocks verifies the given categoryName exists
@@ -403,48 +402,95 @@ void GradesDriver::editGrade(string categoryName, string oldGradeName, string ne
 
 	int categoryGradeCount = mGrades->getCategoryGradeCount(categoryIndex);
 
-	if (categoryGradeCount > 0) {
-		int gradeIndex = -1;
-		try {
-			gradeIndex = getGradeIndex(oldGradeName, categoryIndex, categoryGradeCount);
-		} catch (invalid_argument& e) {
-			// If grade does not exist
-			throw invalid_argument(e.what());
-		}
-
-		bool uniqueGradeName = true;
-		for (int a = 0; a < categoryGradeCount; a++) {
-			if (newGradeName == mGrades->getGradeName(categoryIndex, a)) {
-				if (a != gradeIndex) {
-					uniqueGradeName = false;
-				}
-			}
-		}
-		if(!uniqueGradeName) {
-			throw invalid_argument("New grade name is not unique to the category.");
-		}
-
-		double* newEarnedPoints = new double[categoryGradeCount];
-		double* newTotalPoints = new double[categoryGradeCount];
-		string* newGradeNames = new string[categoryGradeCount];
-		for (int b = 0; b < categoryGradeCount; b++) {
-			if (!(b == gradeIndex)) {
-				newEarnedPoints[b] = mGrades->getEarnedPoints(categoryIndex, b);
-				newTotalPoints[b] = mGrades->getTotalPoints(categoryIndex, b);
-				newGradeNames[b] = mGrades->getGradeName(categoryIndex, b);
-			} else {
-				newEarnedPoints[b] = inEarnedPoints;
-				newTotalPoints[b] = inTotalPoints;
-				newGradeNames[b] = newGradeName;
-			}
-		}
-
-		mGrades->setCategoryGrades(newEarnedPoints, newTotalPoints, newGradeNames, categoryIndex, categoryGradeCount);
-		updateCurrentGrade();
-		mDataChanged = true;
-	} else {
+	if (categoryGradeCount == 0) {
 		throw invalid_argument("Grade does not exist.");
 	}
+
+	int gradeIndex = -1;
+	try {
+		gradeIndex = getGradeIndex(oldGradeName, categoryIndex, categoryGradeCount);
+	} catch (invalid_argument& e) {
+		// If grade does not exist
+		throw invalid_argument(e.what());
+	}
+
+	bool uniqueGradeName = true;
+	for (int a = 0; a < categoryGradeCount; a++) {
+		if (newGradeName == mGrades->getGradeName(categoryIndex, a)) {
+			if (a != gradeIndex) {
+				uniqueGradeName = false;
+			}
+		}
+	}
+
+	if(!uniqueGradeName) {
+		throw invalid_argument("New grade name is not unique to the category.");
+	}
+
+	double* newEarnedPoints = new double[categoryGradeCount];
+	double* newTotalPoints = new double[categoryGradeCount];
+	string* newGradeNames = new string[categoryGradeCount];
+	for (int b = 0; b < categoryGradeCount; b++) {
+		if (!(b == gradeIndex)) {
+			newEarnedPoints[b] = mGrades->getEarnedPoints(categoryIndex, b);
+			newTotalPoints[b] = mGrades->getTotalPoints(categoryIndex, b);
+			newGradeNames[b] = mGrades->getGradeName(categoryIndex, b);
+		} else {
+			newEarnedPoints[b] = mGrades->getEarnedPoints(categoryIndex, b);
+			newTotalPoints[b] = mGrades->getTotalPoints(categoryIndex, b);
+			newGradeNames[b] = newGradeName;
+		}
+	}
+
+	mGrades->setCategoryGrades(newEarnedPoints, newTotalPoints, newGradeNames, categoryIndex, categoryGradeCount);
+	updateCurrentGrade();
+	mDataChanged = true;
+}
+
+void GradesDriver::editGradeValues(string categoryName, string oldGradeName, double inEarnedPoints, double inTotalPoints) throw (runtime_error, invalid_argument) {
+	int categoryIndex = -1;
+
+	// This series of try/catch blocks verifies the given categoryName exists
+	try {
+		categoryIndex = getCategoryIndex(categoryName);
+	} catch (runtime_error& e) {
+		throw runtime_error(e.what());
+	} catch (invalid_argument& e) {
+		throw invalid_argument(e.what());
+	}
+
+	int categoryGradeCount = mGrades->getCategoryGradeCount(categoryIndex);
+
+	if (categoryGradeCount == 0) {
+		throw invalid_argument("Grade does not exist.");
+	}
+
+	int gradeIndex = -1;
+	try {
+		gradeIndex = getGradeIndex(oldGradeName, categoryIndex, categoryGradeCount);
+	} catch (invalid_argument& e) {
+		// If grade does not exist
+		throw invalid_argument(e.what());
+	}
+
+	double* newEarnedPoints = new double[categoryGradeCount];
+	double* newTotalPoints = new double[categoryGradeCount];
+	string* newGradeNames = new string[categoryGradeCount];
+	for (int b = 0; b < categoryGradeCount; b++) {
+		if (!(b == gradeIndex)) {
+			newEarnedPoints[b] = mGrades->getEarnedPoints(categoryIndex, b);
+			newTotalPoints[b] = mGrades->getTotalPoints(categoryIndex, b);
+			newGradeNames[b] = mGrades->getGradeName(categoryIndex, b);
+		} else {
+			newEarnedPoints[b] = inEarnedPoints;
+			newTotalPoints[b] = inTotalPoints;
+			newGradeNames[b] = mGrades->getGradeName(categoryIndex, b);
+		}
+	}
+
+	mGrades->setCategoryGrades(newEarnedPoints, newTotalPoints, newGradeNames, categoryIndex, categoryGradeCount);
+	updateCurrentGrade();
+	mDataChanged = true;
 }
 
 double GradesDriver::getCurrentGrade() const {

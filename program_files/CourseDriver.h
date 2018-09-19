@@ -25,8 +25,11 @@ class CourseDriver {
 
 	string getFileName() const;
 
-	void addCourse(string departmentName, string courseNumber, int creditHours, string gradeFileName) throw (invalid_argument);
-	void editCourse(string oldFullCourseName, string departmentName, string courseNumber, string finalGrade, int creditHours, string newGradesFileName) throw (runtime_error, invalid_argument);
+	void addCourse(string departmentCode, string courseNumber, int creditHours, string gradeFileName) throw (invalid_argument);
+	void editDepartmentCode(string oldFullCourseName, string departmentCode, string newGradesFileName) throw (runtime_error, invalid_argument);
+	void editCourseNumber(string oldFullCourseName, string courseNumber, string newGradesFileName) throw (runtime_error, invalid_argument);
+	void editCreditHours(string oldFullCourseName, int creditHours) throw (invalid_argument);
+	void editFinalGrade(string oldFullCourseName, string finalGrade) throw (invalid_argument);
 	void deleteCourse(string fullCourseName) throw (runtime_error, invalid_argument);
 	void deleteAllCourses();
 

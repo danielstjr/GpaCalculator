@@ -28,8 +28,8 @@ class UserInterface {
 	void deleteGradeCategory(int semesterIndex, int courseIndex);
 	void deleteSemester();
 
-	void editCourse(int semesterIndex);
-	void editGrade(int semesterIndex, int courseIndex);
+	void editCourse(int semesterIndex, int changeType);
+	void editGrade(int semesterIndex, int courseIndex, int changeType);
 	void editGradeCategory(int semesterIndex, int courseIndex);
 	void editSemester();
 

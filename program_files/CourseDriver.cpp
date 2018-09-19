@@ -67,8 +67,8 @@ CourseDriver::~CourseDriver() {
 	delete[] mCourses;
 }
 
-void CourseDriver::addCourse(string departmentName, string courseNumber, int creditHours, string gradeFileName) throw (invalid_argument) {
-	string fullCourseName = departmentName + " " + courseNumber;
+void CourseDriver::addCourse(string departmentCode, string courseNumber, int creditHours, string gradeFileName) throw (invalid_argument) {
+	string fullCourseName = departmentCode + " " + courseNumber;
 	bool uniqueCourseName = false;
 
 	try {
@@ -91,7 +91,7 @@ void CourseDriver::addCourse(string departmentName, string courseNumber, int cre
 	file << 0;
 	file.close();
 
-	newCourses[mNumberOfCourses] = new Course(departmentName, courseNumber, "-1", creditHours, gradeFileName);
+	newCourses[mNumberOfCourses] = new Course(departmentCode, courseNumber, "-1", creditHours, gradeFileName);
 	delete[] mCourses;
 
 	mCourses = newCourses;
@@ -146,7 +146,7 @@ void CourseDriver::deleteAllCourses() {
 	mNumberOfCourses = 0;
 }
 
-void CourseDriver::editCourse(string oldFullCourseName, string departmentName, string courseNumber, string finalGrade, int creditHours, string newGradesFileName) throw (runtime_error, invalid_argument) {
+void CourseDriver::editDepartmentCode(string oldFullCourseName, string departmentCode, string newGradesFileName) throw (runtime_error, invalid_argument) {
 	int courseIndex = -1;
 	try {
 		courseIndex = getCourseIndex(oldFullCourseName);
@@ -155,6 +155,9 @@ void CourseDriver::editCourse(string oldFullCourseName, string departmentName, s
 	}
 
 	string oldGradesFileName = mCourses[courseIndex]->getGradesFileName();
+	string courseNumber = mCourses[courseIndex]->getCourseNumber();
+	string finalGrade = mCourses[courseIndex]->getFinalGrade();
+	int creditHours = mCourses[courseIndex]->getCreditHours();
 
 	// Delete this here so that any data changes are written to file before it is renamed
 	delete mCourses[courseIndex];
@@ -167,8 +170,73 @@ void CourseDriver::editCourse(string oldFullCourseName, string departmentName, s
 		}
 	}
 
+	mCourses[courseIndex] = new Course(departmentCode, courseNumber, finalGrade, creditHours, newGradesFileName);
+	mDataChanged = true;
+}
 
-	mCourses[courseIndex] = new Course(departmentName, courseNumber, finalGrade, creditHours, newGradesFileName);
+void CourseDriver::editCourseNumber(string oldFullCourseName, string courseNumber, string newGradesFileName) throw (runtime_error, invalid_argument) {
+	int courseIndex = -1;
+	try {
+		courseIndex = getCourseIndex(oldFullCourseName);
+	} catch (invalid_argument& e) {
+		throw invalid_argument("Course does not exist.");
+	}
+
+	string oldGradesFileName = mCourses[courseIndex]->getGradesFileName();
+	string departmentCode = mCourses[courseIndex]->getDepartmentCode();
+	string finalGrade = mCourses[courseIndex]->getFinalGrade();
+	int creditHours = mCourses[courseIndex]->getCreditHours();
+
+	// Delete this here so that any data changes are written to file before it is renamed
+	delete mCourses[courseIndex];
+
+	if (oldGradesFileName != newGradesFileName) {
+		int renameSuccessful = rename(oldGradesFileName.c_str(), newGradesFileName.c_str());
+
+		if (renameSuccessful != 0) {
+			throw runtime_error("File could not be renamed.");
+		}
+	}
+
+	mCourses[courseIndex] = new Course(departmentCode, courseNumber, finalGrade, creditHours, newGradesFileName);
+	mDataChanged = true;
+}
+
+void CourseDriver::editCreditHours (string oldFullCourseName, int creditHours) throw (invalid_argument) {
+	int courseIndex = -1;
+	try {
+		courseIndex = getCourseIndex(oldFullCourseName);
+	} catch (invalid_argument& e) {
+		throw invalid_argument("Course does not exist.");
+	}
+
+	string departmentCode = mCourses[courseIndex]->getDepartmentCode();
+	string courseNumber = mCourses[courseIndex]->getCourseNumber();
+	string finalGrade = mCourses[courseIndex]->getFinalGrade();
+	string gradesFileName = mCourses[courseIndex]->getGradesFileName();
+
+	delete mCourses[courseIndex];
+
+	mCourses[courseIndex] = new Course(departmentCode, courseNumber, finalGrade, creditHours, gradesFileName);
+	mDataChanged = true;
+}
+
+void CourseDriver::editFinalGrade(string oldFullCourseName, string finalGrade) throw (invalid_argument) {
+	int courseIndex = -1;
+	try {
+		courseIndex = getCourseIndex(oldFullCourseName);
+	} catch (invalid_argument& e) {
+		throw invalid_argument("Course does not exist.");
+	}
+
+	string departmentCode = mCourses[courseIndex]->getDepartmentCode();
+	string courseNumber = mCourses[courseIndex]->getCourseNumber();
+	int creditHours = mCourses[courseIndex]->getCreditHours();
+	string gradesFileName = mCourses[courseIndex]->getGradesFileName();
+
+	delete mCourses[courseIndex];
+
+	mCourses[courseIndex] = new Course(departmentCode, courseNumber, finalGrade, creditHours, gradesFileName);
 	mDataChanged = true;
 }
 

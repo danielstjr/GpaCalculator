@@ -19,7 +19,7 @@ class GradesDriver {
 	/** Pointer to a Grades object */
 	Grades* mGrades;
 
-	/** 
+	/**
 	* @param string original String that has underscores instead of spaces
 	* @return original with underscores replaced by spaces
 	*/
@@ -33,7 +33,7 @@ class GradesDriver {
 	*/
 	int getCategoryIndex(string categoryName) const throw (runtime_error, invalid_argument);
 
-	/** 
+	/**
 	* @param string gradeName string of the grade name being searched for in the given category
 	* @param int gradeCategoryIndex index of the category to search in
 	* @param int categoryGradeCount integer of how many grades are in the grade arrays of this category
@@ -42,7 +42,7 @@ class GradesDriver {
 	*/
 	int getGradeIndex(string gradeName, int gradeCategoryIndex, int categoryGradeCount) throw (invalid_argument);
 
-	/** 
+	/**
 	* @param string original String that has spaces instead of underscores
 	* @return original with spaces replaced by underscores
 	*/
@@ -60,13 +60,13 @@ class GradesDriver {
 	void writeDataChangesToFile();
 
 	public:
-	/** 
+	/**
 	* @pre fileName is a valid file with data in it, formatted correctly
 	* @post Gets all data from the file and initializes mGrades with it
 	*/
 	GradesDriver(string fileName);
 
-	/** 
+	/**
 	* @post Creates an empty GradesDriver object
 	*/
 	GradesDriver();
@@ -77,7 +77,7 @@ class GradesDriver {
 	*/
 	GradesDriver& operator= (const GradesDriver& original);
 
-	/** 
+	/**
 	* @post Calls the function to write data changes to file if mDataChanged is true then calls delete on the mGrades object
 	*/
 	~GradesDriver();
@@ -91,7 +91,7 @@ class GradesDriver {
 	*/
 	void addCategory(string categoryName, int categoryWeight) throw (invalid_argument);
 
-	/** 
+	/**
 	* @pre gradeName is a valid name without any non-letter/number characters
 	* @param string categoryName String name of a category
 	* @param double grade Grade to be inserted into the given category
@@ -111,7 +111,7 @@ class GradesDriver {
 	*/
 	void deleteCategory(string categoryName)  throw (runtime_error, invalid_argument);
 
-	/** 
+	/**
 	* @param string categoryName Name of the category from which to delete the grade
 	* @param string gradeName Name of the grade to delete from the given category
 	* @throw runtime_error if no categories are initialized
@@ -132,7 +132,7 @@ class GradesDriver {
 	*/
 	void editCategory (string oldCategoryName, string newCategoryName, int newCategoryWeight) throw (runtime_error, invalid_argument);
 
-	/** 
+	/**
 	* @pre replacementGradeName is a valid name without any non-letter/number characters
 	* @param string categoryName Name of the category that holds the grade to edit
 	* @param string oldGradeName Name of the grade that is being edited
@@ -142,14 +142,26 @@ class GradesDriver {
 	* @throw invalid_argument if given category or grade do not exist, or the new grade name is non unique
 	* @post resets grade in the given category and name with the replacement grade and grade name
 	*/
-	void editGrade(string categoryName, string oldGradeName, string newGradeName, double inEarnedPoints, double inTotalPoints) throw (runtime_error, invalid_argument);
+	void editGradeName(string categoryName, string oldGradeName, string newGradeName) throw (runtime_error, invalid_argument);
+
+	/**
+	* @pre replacementGradeName is a valid name without any non-letter/number characters
+	* @param string categoryName Name of the category that holds the grade to edit
+	* @param string oldGradeName Name of the grade that is being edited
+	* @param string replacementGradeName New name for the grade in the given category
+	* @param double replacementGrade New grade for the grade in the given category
+	* @throw runtime_error if no categories are initialized
+	* @throw invalid_argument if given category or grade do not exist, or the new grade name is non unique
+	* @post resets grade in the given category and name with the replacement grade and grade name
+	*/
+	void editGradeValues(string categoryName, string oldGradeName, double inEarnedPoints, double inTotalPoints) throw (runtime_error, invalid_argument);
 
 	/**
 	* @return The current grade from the mGrades object as a double
 	*/
 	double getCurrentGrade() const;
 
-	/** 
+	/**
 	* @return The file name used to construct this object
 	*/
 	string getFileName() const;
