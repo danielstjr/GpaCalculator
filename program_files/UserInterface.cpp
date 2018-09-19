@@ -224,6 +224,7 @@ void UserInterface::addGradeCategory(int semesterIndex, int courseIndex) {
 	try {
 		while (!gradeCategoryAdded) {
 			string categoryName;
+			int categoryWeight;
 
 			cout << "\n";
 			categoryName = getValidString("Enter the name of the grade category you want to add", "Category names can only contain letters and spaces.", true, true);
