@@ -32,7 +32,7 @@ class Grades {
 
 	public:
 	/**
-	* @pre The arrays passed in have data in them, grades and gradeNames are the same size and the category arrays are the same size
+	* @pre The arrays passed in have data in them, grades and gradeNames are the same size and the category arrays are the same size, and there is at least one category
 	* @param grades double nested array of grade values
 	* @param gradeNames double nested array of grade names for each grade in the grades array
 	* @param categoryWeights int array of weights of each category
@@ -47,12 +47,6 @@ class Grades {
 	* @post Initializes all arrays to nullptr and all size integers to 0
 	*/
 	Grades();
-
-	/**
-	* @pre initialized Grades object
-	* @return Creates a new Grades object that is a deep copy of original
-	*/
-	Grades& operator= (const Grades& original);
 
 	/**
 	* @post Deletes all the arrays of this Grades object

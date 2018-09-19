@@ -70,10 +70,10 @@ void UserInterface::changeGrades() {
 		menu += "8) Select a Different Semester/Course\n9) Exit\n";
 	} catch (runtime_error& e) {
 		cout << e.what() << endl;
-		intUserInput = 8;
+		intUserInput = 9;
 	} catch (logic_error& e) {
 		cout << "\nQuitting...\n\n";;
-		intUserInput = 8;
+		intUserInput = 9;
 	}
 
 	while (intUserInput != 9) {
@@ -157,7 +157,6 @@ void UserInterface::addGradeCategory(int semesterIndex, int courseIndex) {
 	try {
 		while (!gradeCategoryAdded) {
 			string categoryName;
-			int categoryWeight;
 
 			cout << "\n";
 			categoryName = getValidString("Enter the name of the grade category you want to add", "Category names can only contain letters and spaces.", true, true);
@@ -323,10 +322,10 @@ void UserInterface::changeCourses() {
 		menu += "7) Change Semester Selection\n8) Exit\n";
 	} catch(logic_error& e) {
 		cout << "\nQuitting...\n\n";;
-		intUserInput = 5;
+		intUserInput = 8;
 	} catch (runtime_error& e) {
 		cout << e.what() << endl;
-		intUserInput = 5;
+		intUserInput = 8;
 	}
 
 	while (intUserInput != 8) {

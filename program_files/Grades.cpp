@@ -54,68 +54,6 @@ Grades::Grades() {
 	mCurrentGrade = -1;
 }
 
-Grades& Grades::operator= (const Grades& original) {
-	for (int a = 0; a < mCategoryCount; a++) {
-		delete[] mEarnedPoints[a];
-		delete[] mTotalPoints[a];
-		delete[] mGradeNames[a];
-	}
-
-	delete[] mEarnedPoints;
-	delete[] mTotalPoints;
-	delete[] mGradeNames;
-	delete[] mCategoryWeights;
-	delete[] mCategoryNames;
-	delete[] mCategoryGradeCounts;
-
-	if (mCategoryCount > 0) {
-		mCategoryCount = original.mCategoryCount;
-
-		mEarnedPoints = new double*[mCategoryCount];
-		mTotalPoints = new double*[mCategoryCount];
-		mGradeNames = new string*[mCategoryCount];
-		mCategoryNames = new string[mCategoryCount];
-		mCategoryWeights = new int[mCategoryCount];
-		mCategoryGradeCounts = new int[mCategoryCount];
-
-		for (int b = 0; b < mCategoryCount; b++) {
-			int categoryGradeCount = original.mCategoryGradeCounts[b];
-
-			mCategoryNames[b] = original.mCategoryNames[b];
-			mCategoryWeights[b] = original.mCategoryWeights[b];
-			mCategoryGradeCounts[b] = categoryGradeCount;
-
-			if (categoryGradeCount > 0) {
-				mEarnedPoints[b] = new double[categoryGradeCount];
-				mTotalPoints[b] = new double[categoryGradeCount];
-				mGradeNames[b] = new string[categoryGradeCount];
-				for (int c = 0; c < categoryGradeCount; c++) {
-					mEarnedPoints[b][c] = original.mEarnedPoints[b][c];
-					mTotalPoints[b][c] = original.mTotalPoints[b][c];
-					mGradeNames[b][c] = original.mGradeNames[b][c];
-				}
-			} else {
-				mEarnedPoints[b] = nullptr;
-				mTotalPoints[b] = nullptr;
-				mGradeNames[b] = nullptr;
-			}
-		}
-
-		mCurrentGrade = original.mCurrentGrade;
-	} else {
-		mEarnedPoints = nullptr;
-		mTotalPoints = nullptr;
-		mGradeNames = nullptr;
-		mCategoryNames = nullptr;
-		mCategoryWeights = nullptr;
-		mCategoryGradeCounts = nullptr;
-		mCategoryCount = 0;
-		mCurrentGrade = -1;
-	}
-
-	return(*this);
-}
-
 Grades::~Grades() {
 	for (int i = 0; i < mCategoryCount; i++) {
 		if (mCategoryGradeCounts[i] > 0) {

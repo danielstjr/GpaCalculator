@@ -20,7 +20,6 @@ class CourseDriver {
 
 	public:
 	CourseDriver(string fileName);
-	CourseDriver& operator= (const CourseDriver& original);
 	~CourseDriver();
 
 	string getFileName() const;

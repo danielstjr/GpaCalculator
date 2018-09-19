@@ -43,20 +43,6 @@ CourseDriver::CourseDriver (string fileName) {
 	mDataChanged = false;
 }
 
-CourseDriver& CourseDriver::operator= (const CourseDriver& original) {
-	for (int i = 0; i < mNumberOfCourses; i++) {
-		delete mCourses[i];
-	}
-	delete[] mCourses;
-
-	mCourses = original.mCourses;
-	mNumberOfCourses = original.mNumberOfCourses;
-	mDataChanged = original.mDataChanged;
-	mFileName = original.mFileName;
-
-	return (*this);
-}
-
 CourseDriver::~CourseDriver() {
 	if (mDataChanged) {
 		writeDataChangesToFile();

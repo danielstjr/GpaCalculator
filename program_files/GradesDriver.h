@@ -72,12 +72,6 @@ class GradesDriver {
 	GradesDriver();
 
 	/**
-	* @pre initialized GradesDriver object
-	* @return Creates a new GradesDriver object that is a deep copy of original
-	*/
-	GradesDriver& operator= (const GradesDriver& original);
-
-	/**
 	* @post Calls the function to write data changes to file if mDataChanged is true then calls delete on the mGrades object
 	*/
 	~GradesDriver();

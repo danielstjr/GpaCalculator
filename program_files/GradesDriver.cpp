@@ -82,16 +82,6 @@ GradesDriver::GradesDriver() {
 	mGrades = nullptr;
 }
 
-GradesDriver& GradesDriver::operator= (const GradesDriver& original) {
-	delete mGrades;
-
-	mDataChanged = original.mDataChanged;
-	mFileName = original.mFileName;
-	mGrades = original.mGrades;
-
-	return (*this);
-}
-
 GradesDriver::~GradesDriver() {
 	if (mDataChanged) {
 		writeDataChangesToFile();
